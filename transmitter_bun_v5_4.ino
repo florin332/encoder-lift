@@ -173,13 +173,42 @@ void loop() {
   else {Svc=5;}                     //svc=5 pt functionare normala  svc=4 rezervat pt lipsa semnal serial , setat din receptor
 lastPos = Pos;
 
-char buffer[12];
 
-sprintf(buffer, "<%d,%d,%d,%d,%d>" , Pos, Des, Ocp, Sj, Svc );
+
+uint8_t crc8(const char *data)
+{
+    uint8_t crc = 0x00;
+
+    while (*data)
+    {
+        crc ^= (uint8_t)*data++;
+
+        for (uint8_t i = 0; i < 8; i++)
+        {
+            if (crc & 0x80)
+                crc = (crc << 1) ^ 0x07;
+            else
+                crc <<= 1;
+        }
+    }
+
+    return crc;
+}
+  
+  
+char payload[12];
+char buffer[20];
+
+sprintf(payload, "%d,%d,%d,%d,%d",
+        Pos, Des, Ocp, Sj, Svc);
+
+uint8_t crc = crc8(payload);
+
+sprintf(buffer, "<%s*%02X>", payload, crc);
 
 Serial.println(buffer);
-
 Serial1.println(buffer);
+
 delay(100);
 //Serial1.println(buffer);
 
