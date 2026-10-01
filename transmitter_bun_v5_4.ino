@@ -175,7 +175,7 @@ lastPos = Pos;
 
 char buffer[12];
 
-sprintf(buffer, "<%02d,%02d,%d,%d,%d>" , Pos, Des, Ocp, Sj, Svc );
+sprintf(buffer, "<%d,%d,%d,%d,%d>" , Pos, Des, Ocp, Sj, Svc );
 
 Serial.println(buffer);
 
