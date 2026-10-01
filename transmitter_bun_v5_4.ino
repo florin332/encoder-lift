@@ -46,6 +46,26 @@ int pos[18];  //  array pt pozitia curenta
   //int Ocp = 0;     // ocupat
   //int Per = 0 ;     // cu persoane
 
+uint8_t crc8(const char *data)
+{
+    uint8_t crc = 0x00;
+
+    while (*data)
+    {
+        crc ^= (uint8_t)*data++;
+
+        for (uint8_t i = 0; i < 8; i++)
+        {
+            if (crc & 0x80)
+                crc = (crc << 1) ^ 0x07;
+            else
+                crc <<= 1;
+        }
+    }
+
+    return crc;
+}
+
 
 void setup() {
   u8g2.begin();
@@ -175,29 +195,11 @@ lastPos = Pos;
 
 
 
-uint8_t crc8(const char *data)
-{
-    uint8_t crc = 0x00;
 
-    while (*data)
-    {
-        crc ^= (uint8_t)*data++;
-
-        for (uint8_t i = 0; i < 8; i++)
-        {
-            if (crc & 0x80)
-                crc = (crc << 1) ^ 0x07;
-            else
-                crc <<= 1;
-        }
-    }
-
-    return crc;
-}
   
   
 char payload[12];
-char buffer[20];
+char buffer[18];
 
 sprintf(payload, "%d,%d,%d,%d,%d",
         Pos, Des, Ocp, Sj, Svc);
